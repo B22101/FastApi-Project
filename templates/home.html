@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don Bosco College - Student Discipline Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .slide-in-animation {
+            animation: slideIn 1s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .fade-in-animation {
+            animation: fadeIn 1.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .stats-counter {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            margin: 4rem 0;
+        }
+        
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .testimonial-card {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .nav-glass {
+            background: rgba(30, 58, 138, 0.95);
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-glass.scrolled {
+            background: rgba(30, 58, 138, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800 overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="nav-glass fixed w-full z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center slide-in-animation">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mr-4 shadow-lg">
+                        <i class="fas fa-graduation-cap text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">Don Bosco College</h1>
+                        <p class="text-blue-200 text-sm">Excellence in Education</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="text-white hover:text-blue-300 transition duration-300 relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="#features" class="text-white hover:text-blue-300 transition duration-300 relative group">
+                        Features
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="#about" class="text-white hover:text-blue-300 transition duration-300 relative group">
+                        About
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="/login" class="btn-primary text-white px-6 py-2 rounded-full hover:shadow-lg transition duration-300">
+                        Login <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-white text-xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-gradient min-h-screen flex items-center justify-center relative">
+        <div class="hero-content container mx-auto px-6 text-center text-white">
+            <div class="floating-animation mb-8">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6 glass-effect">
+                    <i class="fas fa-shield-alt text-4xl text-white"></i>
+                </div>
+            </div>
+            <h2 class="text-6xl md:text-7xl font-bold mb-6 fade-in-animation">
+                Student Discipline
+                <span class="block gradient-text">Management System</span>
+            </h2>
+            <p class="text-xl md:text-2xl mb-8 max-w-4xl mx-auto leading-relaxed fade-in-animation opacity-90">
+                Transform educational excellence with our comprehensive platform designed for Don Bosco College. 
+                Streamline discipline management, empower educators with real-time insights, and create a positive learning environment.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center fade-in-animation">
+                <a href="/login.html" class="btn-primary text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-2xl transition duration-300 relative overflow-hidden">
+                    Get Started Today <i class="fas fa-rocket ml-3"></i>
+                </a>
+                <a href="#features" class="glass-effect text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:bg-opacity-20 transition duration-300">
+                    Learn More <i class="fas fa-chevron-down ml-3"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute top-20 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-pulse"></div>
+        <div class="absolute bottom-20 right-10 w-16 h-16 bg-blue-300 bg-opacity-20 rounded-full animate-bounce"></div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="fade-in-animation">
+                    <div class="stats-counter">5000+</div>
+                    <p class="text-gray-600 font-medium">Students Managed</p>
+                </div>
+                <div class="fade-in-animation">
+                    <div class="stats-counter">200+</div>
+                    <p class="text-gray-600 font-medium">Faculty Members</p>
+                </div>
+                <div class="fade-in-animation">
+                    <div class="stats-counter">99.9%</div>
+                    <p class="text-gray-600 font-medium">System Uptime</p>
+                </div>
+                <div class="fade-in-animation">
+                    <div class="stats-counter">24/7</div>
+                    <p class="text-gray-600 font-medium">Support Available</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 bg-gradient-to-b from-gray-50 to-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold mb-6">
+                    Powerful <span class="gradient-text">Features</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Experience next-generation education management with our comprehensive suite of tools designed for modern institutions.
+                </p>
+                <div class="section-divider"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-user-check text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Smart Student Monitoring</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Advanced AI-powered tracking system that monitors student behavior, academic performance, and disciplinary records with intelligent insights and predictive analytics.
+                    </p>
+                </div>
+                
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-bell text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Real-Time Alerts</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Instant notification system with customizable alerts, SMS integration, and email notifications to ensure immediate response to critical situations.
+                    </p>
+                </div>
+                
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-line text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Advanced Analytics</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Comprehensive dashboard with interactive charts, trend analysis, and data visualization tools for informed decision-making and strategic planning.
+                    </p>
+                </div>
+                
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-award text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Scholarship & Awards</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Automated scholarship processing, merit-based award system, and recognition programs to celebrate student achievements and encourage excellence.
+                    </p>
+                </div>
+                
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-16 h-16 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-gavel text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Discipline Management</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Comprehensive incident recording system with customizable severity levels, automated workflows, and progressive disciplinary action management.
+                    </p>
+                </div>
+                
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-users text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">Staff Collaboration</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Seamless communication platform with role-based access, collaborative tools, and integrated messaging for enhanced team coordination.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-24 parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1556075798-4825dfaaf498?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80');">
+        <div class="bg-blue-900 bg-opacity-90 py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-5xl font-bold text-white mb-6">What Our Users Say</h2>
+                    <p class="text-xl text-blue-200 max-w-3xl mx-auto">
+                        Discover how our platform transforms educational institutions worldwide
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="testimonial-card p-8 rounded-2xl shadow-lg">
+                        <div class="flex items-center mb-6">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Principal" class="w-16 h-16 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-gray-800">Dr. Sarah Johnson</h4>
+                                <p class="text-blue-600">Principal</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "This system has revolutionized how we manage student discipline. The real-time insights and automated workflows have improved our efficiency by 300%."
+                        </p>
+                    </div>
+                    
+                    <div class="testimonial-card p-8 rounded-2xl shadow-lg">
+                        <div class="flex items-center mb-6">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616c1f63d5a?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Teacher" class="w-16 h-16 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-gray-800">Maria Rodriguez</h4>
+                                <p class="text-blue-600">Head of Discipline</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "The analytics dashboard provides incredible insights into student behavior patterns. It's like having a crystal ball for preventive intervention."
+                        </p>
+                    </div>
+                    
+                    <div class="testimonial-card p-8 rounded-2xl shadow-lg">
+                        <div class="flex items-center mb-6">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Administrator" class="w-16 h-16 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-gray-800">Michael Chen</h4>
+                                <p class="text-blue-600">IT Administrator</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 italic">
+                            "Implementation was seamless, and the support team is outstanding. The system integrates perfectly with our existing infrastructure."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="order-2 lg:order-1">
+                    <h2 class="text-5xl font-bold mb-8">
+                        About Our <span class="gradient-text">System</span>
+                    </h2>
+                    <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                        The Don Bosco College Student Discipline Management System represents the pinnacle of educational technology innovation. Built with cutting-edge cloud architecture and AI-powered insights, our platform provides a secure, scalable, and intuitive solution for modern educational institutions.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                        Our system seamlessly integrates discipline management, academic tracking, and administrative workflows into a unified platform. With advanced security protocols, real-time analytics, and mobile-first design, we empower educators to create positive learning environments while maintaining institutional excellence.
+                    </p>
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div class="text-center p-4 bg-blue-50 rounded-xl">
+                            <i class="fas fa-shield-alt text-3xl text-blue-600 mb-2"></i>
+                            <h4 class="font-bold text-gray-800">Secure</h4>
+                            <p class="text-sm text-gray-600">Bank-level security</p>
+                        </div>
+                        <div class="text-center p-4 bg-green-50 rounded-xl">
+                            <i class="fas fa-mobile-alt text-3xl text-green-600 mb-2"></i>
+                            <h4 class="font-bold text-gray-800">Mobile</h4>
+                            <p class="text-sm text-gray-600">Access anywhere</p>
+                        </div>
+                    </div>
+                    <a href="/login.html" class="btn-primary text-white px-8 py-4 rounded-full text-lg font-semibold inline-flex items-center">
+                        Explore Platform <i class="fas fa-arrow-right ml-3"></i>
+                    </a>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern Classroom" class="rounded-2xl shadow-2xl">
+                        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl">
+                            <div class="text-center text-white">
+                                <div class="text-2xl font-bold">2025</div>
+                                <div class="text-sm">Est.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 bg-gradient-to-r from-blue-600 to-blue-800">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-5xl font-bold text-white mb-6">Ready to Transform Your Institution?</h2>
+            <p class="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+                Join thousands of educational institutions worldwide who trust our platform for their discipline management needs.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/login.html" class="bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition duration-300">
+                    Start Free Trial <i class="fas fa-play ml-3"></i>
+                </a>
+                <a href="#contact" class="glass-effect text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:bg-opacity-20 transition duration-300">
+                    Schedule Demo <i class="fas fa-calendar ml-3"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-graduation-cap text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Don Bosco College</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">Empowering education through innovative technology solutions.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Platform</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Features</a></li>
+                        <li><a href="#" class="hover:text-white transition">Security</a></li>
+                        <li><a href="#" class="hover:text-white transition">Integration</a></li>
+                        <li><a href="#" class="hover:text-white transition">API</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/contact.html" class="hover:text-white transition">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white transition">Documentation</a></li>
+                        <li><a href="#" class="hover:text-white transition">Training</a></li>
+                        <li><a href="#" class="hover:text-white transition">24/7 Support</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/privacy.html" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="/terms.html" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white transition">GDPR</a></li>
+                        <li><a href="#" class="hover:text-white transition">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400">© 2025 Don Bosco College. All rights reserved.</p>
+                <p class="text-gray-400 mt-4 md:mt-0">Made with ❤️ for education excellence</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.nav-glass');
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in-animation').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.8s ease, transform
+// Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in-animation').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(el);
+        });
+
+        // Counter animation
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current) + (target === 99.9 ? '.9%' : target === 5000 ? '+' : target === 200 ? '+' : '');
+            }, 20);
+        }
+
+        // Initialize counters when in view
+        const counterObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.stats-counter');
+                    counters.forEach(counter => {
+                        const target = counter.textContent.includes('5000') ? 5000 :
+                                     counter.textContent.includes('200') ? 200 :
+                                     counter.textContent.includes('99.9') ? 99.9 : 24;
+                        animateCounter(counter, target);
+                    });
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // Observe stats section
+        const statsSection = document.querySelector('.py-20.bg-white');
+        if (statsSection) {
+            counterObserver.observe(statsSection);
+        }
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.querySelector('.md\\:hidden button');
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', function() {
+                // Add mobile menu functionality here if needed
+                console.log('Mobile menu clicked');
+            });
+        }
+
+        // Parallax effect for background images
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax-bg');
+            
+            parallaxElements.forEach(element => {
+                const speed = 0.5;
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Add loading animation
+        window.addEventListener('load', function() {
+            document.body.classList.add('loaded');
+        });
+
+        // Form validation and interaction enhancements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add any additional initialization code here
+            console.log('Don Bosco College Landing Page Loaded Successfully');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<h2>Scholarship Applications</h2>
+<table>
+    <tr><th>Student</th><th>Reason</th><th>Status</th><th>Action</th></tr>
+    {% for scholarship in scholarships %}
+    <tr>
+        <td>{{ scholarship.student_id }}</td>
+        <td>{{ scholarship.reason }}</td>
+        <td>{{ scholarship.status }}</td>
+        <td><button>Approve</button> <button>Reject</button></td>
+    </tr>
+    {% endfor %}
+</table>

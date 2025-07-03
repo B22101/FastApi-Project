@@ -1,0 +1,11 @@
+<h2>Review Discipline Actions</h2>
+<table>
+    <tr><th>Student</th><th>Action</th><th>Status</th></tr>
+    {% for action in actions %}
+    <tr>
+        <td>{{ action.student_id }}</td>
+        <td>{{ action.action_text }}</td>
+        <td>{{ action.status }}</td>
+    </tr>
+    {% endfor %}
+</table>

@@ -1,0 +1,11 @@
+<h2>Manage Discipline Actions</h2>
+<table>
+    <tr><th>Incident ID</th><th>Action</th><th>Status</th></tr>
+    {% for action in actions %}
+    <tr>
+        <td>{{ action.incident_id }}</td>
+        <td>{{ action.action_text }}</td>
+        <td>{{ action.status }}</td>
+    </tr>
+    {% endfor %}
+</table>

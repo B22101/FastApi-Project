@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - School Management</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #ef4444;
+            --bg-light: #f3f4f6;
+            --bg-dark: #1f2937;
+            --text-light: #111827;
+            --text-dark: #d1d5db;
+            --card-bg-light: white;
+            --card-bg-dark: #374151;
+            --shadow: 0 6px 20px rgba(0,0,0,0.15);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: background 0.3s, color 0.3s;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+        }
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 280px;
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            transition: width 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 20;
+            animation: slideInLeft 0.5s ease-out;
+        }
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        .sidebar h2 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar.collapsed h2 span {
+            display: none;
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar ul li {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .sidebar ul li:hover {
+            background: var(--secondary);
+            transform: translateX(5px);
+        }
+        .sidebar ul li i {
+            margin-right: 10px;
+        }
+        .sidebar.collapsed ul li span {
+            display: none;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 20px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            background: var(--bg-light);
+            transition: background 0.3s;
+        }
+        body.dark-mode .main-content {
+            background: var(--bg-dark);
+        }
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: var(--shadow);
+            animation: slideDown 0.5s ease-out;
+        }
+        .header input {
+            padding: 8px;
+            border: none;
+            border-radius: 20px;
+            width: 200px;
+            outline: none;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: var(--card-bg-light);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, opacity 0.3s, background 0.3s;
+            opacity: 0;
+            animation: zoomIn 0.5s forwards;
+            text-align: center;
+        }
+        body.dark-mode .card {
+            background: var(--card-bg-dark);
+        }
+        .card:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+        .card:nth-child(even) {
+            animation-delay: 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            background: #e8f0fe;
+        }
+        body.dark-mode .card:hover {
+            background: #4b5563;
+        }
+        .card h4 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        .card p {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+        body.dark-mode .card p {
+            color: var(--text-dark);
+        }
+        .btn-feature {
+            display: block;
+            background: var(--secondary);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .btn-feature:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            color: white;
+        }
+        .welcome-card {
+            grid-column: 1 / -1;
+            background: var(--gradient);
+            color: white;
+            padding: 30px;
+        }
+        .welcome-card h2 {
+            font-size: 28px;
+            margin: 0;
+        }
+        .toggle-btn, .theme-toggle {
+            cursor: pointer;
+            font-size: 20px;
+            padding: 5px;
+        }
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            .sidebar h2 span {
+                display: none;
+            }
+            .main-content {
+                margin-left: 70px;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .header input {
+                width: 150px;
+            }
+        }
+        footer {
+            background: var(--gradient);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: calc(100% - 280px);
+            margin-left: 280px;
+            z-index: 9;
+            transition: width 0.3s, margin-left 0.3s;
+        }
+        .sidebar.collapsed ~ .main-content footer {
+            width: calc(100% - 70px);
+            margin-left: 70px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <h2><i class="fas fa-user-shield"></i> <span>Admin Dashboard</span></h2>
+            <ul>
+                <li onclick="loadSection('staffmembers')"><i class="fas fa-users"></i> <span>Staff Members</span></li>
+                <li onclick="loadSection('students')"><i class="fas fa-user-graduate"></i> <span>Students</span></li>
+                <li onclick="loadSection('checkbeststudentawards')"><i class="fas fa-trophy"></i> <span>Check Best Student Awards</span></li>
+                <li onclick="loadSection('applyscholarship')"><i class="fas fa-award"></i> <span>Apply Scholarship</span></li>
+                <li onclick="loadSection('applybeststudentaward')"><i class="fas fa-medal"></i> <span>Apply Best Student Award</span></li>
+                <li onclick="loadSection('disciplineactions')"><i class="fas fa-gavel"></i> <span>Discipline Actions</span></li>
+                <li onclick="loadSection('assignactions')"><i class="fas fa-tasks"></i> <span>Assign Actions</span></li>
+                <li onclick="loadSection('disciplineincidents')"><i class="fas fa-exclamation-circle"></i> <span>Discipline Incidents</span></li>
+                <li onclick="loadSection('severitylevels')"><i class="fas fa-ruler"></i> <span>Severity Levels</span></li>
+                <li onclick="loadSection('checkscholarship')"><i class="fas fa-money-check-alt"></i> <span>Check Scholarship</span></li>
+                <li onclick="loadSection('departments')"><i class="fas fa-building"></i> <span>Departments</span></li>
+                <li onclick="loadSection('classes')"><i class="fas fa-chalkboard"></i> <span>Classes</span></li>
+                <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Admin Dashboard</h1>
+                <div class="search-container">
+                    <input type="text" id="search-bar" placeholder="Search Controls..." onkeyup="searchDashboard()">
+                    <span class="toggle-btn" onclick="toggleSidebar()">☰</span>
+                    <span class="theme-toggle" onclick="toggleTheme()">🌙</span>
+                </div>
+            </div>
+            <div class="dashboard-grid" id="dashboard-grid">
+                <!-- Welcome Card -->
+                <div class="card welcome-card">
+                    <h2>Welcome, Admin!</h2>
+                    <p>Manage all School Management operations from this powerful dashboard.</p>
+                </div>
+
+                <!-- Staff Members -->
+                <div class="card" data-section="staffmembers">
+                    <h4>Staff Members</h4>
+                    <p>View, edit, and manage staff members.</p>
+                    <a href="/staffmembers" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Students -->
+                <div class="card" data-section="students">
+                    <h4>Students</h4>
+                    <p>Manage student records and information.</p>
+                    <a href="/students" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Check Best Student Awards -->
+                <div class="card" data-section="checkbeststudentawards">
+                    <h4>Check Best Student Awards</h4>
+                    <p>Review best student award nominations.</p>
+                    <a href="/checkbeststudentawards" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Apply Scholarship -->
+                <div class="card" data-section="applyscholarship">
+                    <h4>Apply Scholarship</h4>
+                    <p>Process scholarship applications.</p>
+                    <a href="/applyscholarship" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Apply Best Student Award -->
+                <div class="card" data-section="applybeststudentaward">
+                    <h4>Apply Best Student Award</h4>
+                    <p>Nominate students for best student awards.</p>
+                    <a href="/applybeststudentaward" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Discipline Actions -->
+                <div class="card" data-section="disciplineactions">
+                    <h4>Discipline Actions</h4>
+                    <p>Manage disciplinary actions for students.</p>
+                    <a href="/disciplineactions" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Assign Actions -->
+                <div class="card" data-section="assignactions">
+                    <h4>Assign Actions</h4>
+                    <p>Assign disciplinary actions to students.</p>
+                    <a href="/assignactions" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Discipline Incidents -->
+                <div class="card" data-section="disciplineincidents">
+                    <h4>Discipline Incidents</h4>
+                    <p>Track and review discipline incidents.</p>
+                    <a href="/disciplineincidents" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Severity Levels -->
+                <div class="card" data-section="severitylevels">
+                    <h4>Severity Levels</h4>
+                    <p>Define and manage discipline severity levels.</p>
+                    <a href="/severitylevels" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Check Scholarship -->
+                <div class="card" data-section="checkscholarship">
+                    <h4>Check Scholarship</h4>
+                    <p>Review scholarship statuses and details.</p>
+                    <a href="/checkscholarship" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Departments -->
+                <div class="card" data-section="departments">
+                    <h4>Departments</h4>
+                    <p>Manage academic departments.</p>
+                    <a href="/departments" class="btn-feature">Go</a>
+                </div>
+
+                <!-- Classes -->
+                <div class="card" data-section="classes">
+                    <h4>Classes</h4>
+                    <p>Organize and manage class schedules.</p>
+                    <a href="/classes" class="btn-feature">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 School Management | Admin Panel</p>
+    </footer>
+
+    <script>
+        // Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        // Load Section
+        function loadSection(section) {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                if (card.classList.contains('welcome-card')) return;
+                card.style.display = card.dataset.section === section ? 'block' : 'none';
+            });
+        }
+
+        // Search Functionality
+        function searchDashboard() {
+            const query = document.getElementById('search-bar').value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Admin Dashboard 50.0 loaded successfully!");
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>
