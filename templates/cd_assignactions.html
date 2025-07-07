@@ -1,8 +1,228 @@
-<h2>Assign Disciplinary Action</h2>
-<form method="POST" action="/cd_assign_action">
-    <label>Incident ID:</label>
-    <input type="text" name="incident_id" required><br><br>
-    <label>Action:</label><br>
-    <textarea name="action_text" required></textarea><br><br>
-    <button type="submit">Assign</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Disciplinary Actions - Don Bosco College</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #ef4444;
+            --bg-light: #f3f4f6;
+            --bg-dark: #1f2937;
+            --text-light: #111827;
+            --text-dark: #d1d5db;
+            --card-bg-light: white;
+            --card-bg-dark: #374151;
+            --shadow: 0 6px 20px rgba(0,0,0,0.15);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --success: #10b981;
+            --error: #ef4444;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            animation: slideDown 0.5s ease-out;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .form-container, .table-container {
+            background: var(--card-bg-light);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            animation: zoomIn 0.5s ease-out;
+        }
+        body.dark-mode .form-container, body.dark-mode .table-container {
+            background: var(--card-bg-dark);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        select, input[type="text"], input[type="date"], textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        select:focus, input:focus, textarea:focus {
+            border-color: var(--secondary);
+            outline: none;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            background: var(--secondary);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background: var(--primary);
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        body.dark-mode tr:nth-child(even) {
+            background: #2d3748;
+        }
+        .error {
+            color: var(--error);
+            font-weight: bold;
+            margin: 10px 0;
+            animation: fadeIn 0.5s;
+        }
+        .message {
+            color: var(--success);
+            font-weight: bold;
+            margin: 10px 0;
+            animation: fadeIn 0.5s;
+        }
+        a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .no-data {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            margin: 20px 0;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Assign Disciplinary Actions</h1>
+        </div>
+        <a href="/committeedashboard?user_id={{ staff.id }}">Back to Committee Dashboard</a>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+        <div class="form-container">
+            <h2>Assign Action</h2>
+            {% if incidents %}
+                <form action="/cd_assignactions?user_id={{ staff.id }}" method="post">
+                    <label for="incident_id">Select Incident</label>
+                    <select id="incident_id" name="incident_id" required>
+                        {% for incident in incidents %}
+                            <option value="{{ incident.id }}">{{ incident.student_name }} - {{ incident.description }} ({{ incident.incident_date }})</option>
+                        {% endfor %}
+                    </select>
+                    <label for="student_id">Student ID</label>
+                    <input type="text" id="student_id" name="student_id" required placeholder="Enter student ID">
+                    <label for="action_description">Action Description</label>
+                    <textarea id="action_description" name="action_description" required placeholder="Describe the disciplinary action"></textarea>
+                    <label for="assigned_date">Assigned Date</label>
+                    <input type="date" id="assigned_date" name="assigned_date" required>
+                    <input type="hidden" name="user_id" value="{{ staff.id }}">
+                    <button type="submit">Assign Action</button>
+                </form>
+            {% else %}
+                <p class="no-data">No incidents assigned to you at this time.</p>
+            {% endif %}
+        </div>
+        <div class="table-container">
+            <h2>Incidents Assigned to You</h2>
+            {% if incidents %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student Name</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for incident in incidents %}
+                            <tr>
+                                <td>{{ incident.id }}</td>
+                                <td>{{ incident.student_name }}</td>
+                                <td>{{ incident.description }}</td>
+                                <td>{{ incident.incident_date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-data">No incidents available.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -19,6 +19,8 @@
             --card-bg-dark: #374151;
             --shadow: 0 6px 20px rgba(0,0,0,0.15);
             --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --success: #10b981;
+            --error: #ef4444;
         }
         * {
             margin: 0;
@@ -113,6 +115,7 @@
             z-index: 10;
             box-shadow: var(--shadow);
             animation: slideDown 0.5s ease-out;
+            border-radius: 8px;
         }
         .header input {
             padding: 8px;
@@ -120,6 +123,10 @@
             border-radius: 20px;
             width: 200px;
             outline: none;
+            transition: width 0.3s;
+        }
+        .header input:focus {
+            width: 250px;
         }
         .dashboard-grid {
             display: grid;
@@ -186,6 +193,7 @@
             background: var(--gradient);
             color: white;
             padding: 30px;
+            border-radius: 16px;
         }
         .welcome-card h2 {
             font-size: 28px;
@@ -195,11 +203,27 @@
             cursor: pointer;
             font-size: 20px;
             padding: 5px;
+            transition: transform 0.2s;
+        }
+        .toggle-btn:hover, .theme-toggle:hover {
+            transform: scale(1.2);
         }
         .search-container {
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+        .message {
+            color: var(--success);
+            font-weight: bold;
+            margin: 10px 0;
+            animation: fadeIn 0.5s;
+        }
+        .error {
+            color: var(--error);
+            font-weight: bold;
+            margin: 10px 0;
+            animation: fadeIn 0.5s;
         }
         @keyframes slideInLeft {
             from { transform: translateX(-100%); }
@@ -212,6 +236,10 @@
         @keyframes zoomIn {
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         @media (max-width: 768px) {
             .sidebar {
@@ -229,6 +257,9 @@
             .header input {
                 width: 150px;
             }
+            .header input:focus {
+                width: 200px;
+            }
         }
         footer {
             background: var(--gradient);
@@ -241,6 +272,7 @@
             margin-left: 280px;
             z-index: 9;
             transition: width 0.3s, margin-left 0.3s;
+            border-radius: 8px 8px 0 0;
         }
         .sidebar.collapsed ~ .main-content footer {
             width: calc(100% - 70px);
@@ -254,10 +286,10 @@
         <div class="sidebar" id="sidebar">
             <h2><i class="fas fa-user-shield"></i> <span>Committee Member Dashboard</span></h2>
             <ul>
-                <li onclick="loadSection('disciplineincidents')"><i class="fas fa-exclamation-circle"></i> <span>Discipline Incidents</span></li>
-                <li onclick="loadSection('assignactions')"><i class="fas fa-tasks"></i> <span>Assign Actions</span></li>
-                <li onclick="loadSection('disciplineactions')"><i class="fas fa-gavel"></i> <span>Discipline Actions</span></li>
-                <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+                <li onclick="navigateSection('disciplineincidents', {{ staff.id }})"><i class="fas fa-exclamation-circle"></i> <span>Discipline Incidents</span></li>
+                <li onclick="navigateSection('assignactions', {{ staff.id }})"><i class="fas fa-tasks"></i> <span>Assign Actions</span></li>
+                <li onclick="navigateSection('disciplineactions', {{ staff.id }})"><i class="fas fa-gavel"></i> <span>Discipline Actions</span></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
 
@@ -271,32 +303,38 @@
                     <span class="theme-toggle" onclick="toggleTheme()">🌙</span>
                 </div>
             </div>
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% endif %}
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
             <div class="dashboard-grid" id="dashboard-grid">
                 <!-- Welcome Card -->
                 <div class="card welcome-card">
-                    <h2>Welcome,{{ staff.name }}</h2>
-                    <p>Manage disciplinary processes from this powerful dashboard.</p>
+                    <h2>Welcome, {{ staff.name }}</h2>
+                    <p>Manage disciplinary processes with ease and efficiency.</p>
                 </div>
 
                 <!-- Discipline Incidents -->
                 <div class="card" data-section="disciplineincidents">
                     <h4>Discipline Incidents</h4>
-                    <p>Track and review discipline incidents.</p>
-                    <a href="/cd_disciplineincidents" class="btn-feature">Go</a>
+                    <p>Track and review student discipline incidents assigned to you.</p>
+                    <a href="/cd_disciplineincidents?user_id={{ staff.id }}" class="btn-feature">Go</a>
                 </div>
 
                 <!-- Assign Actions -->
                 <div class="card" data-section="assignactions">
                     <h4>Assign Actions</h4>
-                    <p>Assign disciplinary actions to students.</p>
-                    <a href="/cd_assignactions" class="btn-feature">Go</a>
+                    <p>Assign disciplinary actions to students for reported incidents.</p>
+                    <a href="/cd_assignactions?user_id={{ staff.id }}" class="btn-feature">Go</a>
                 </div>
 
                 <!-- Discipline Actions -->
                 <div class="card" data-section="disciplineactions">
                     <h4>Discipline Actions</h4>
-                    <p>Manage disciplinary actions for students.</p>
-                    <a href="/cd_disciplineactions" class="btn-feature">Go</a>
+                    <p>View and manage all disciplinary actions in the system.</p>
+                    <a href="/cd_disciplineactions?user_id={{ staff.id }}" class="btn-feature">Go</a>
                 </div>
             </div>
         </div>
@@ -318,13 +356,18 @@
             localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
 
-        // Load Section
-        function loadSection(section) {
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                if (card.classList.contains('welcome-card')) return;
-                card.style.display = card.dataset.section === section ? 'block' : 'none';
-            });
+        // Navigate to Section
+        function navigateSection(section, userId) {
+            const routes = {
+                'disciplineincidents': `/cd_disciplineincidents?user_id=${userId}`,
+                'assignactions': `/cd_assignactions?user_id=${userId}`,
+                'disciplineactions': `/cd_disciplineactions?user_id=${userId}`
+            };
+            if (routes[section]) {
+                window.location.href = routes[section];
+            } else {
+                console.error(`Invalid section: ${section}`);
+            }
         }
 
         // Search Functionality

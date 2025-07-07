@@ -116,8 +116,7 @@
         }
         .header input {
             padding: 8px;
-            border: none;
-            border-radius: 20px;
+            border: none;\n            border-radius: 20px;
             width: 200px;
             outline: none;
         }
@@ -254,10 +253,10 @@
         <div class="sidebar" id="sidebar">
             <h2><i class="fas fa-user-shield"></i> <span>Faculty Dashboard</span></h2>
             <ul>
-                <li onclick="loadSection('disciplineincidents')"><i class="fas fa-exclamation-circle"></i> <span>Discipline Incidents</span></li>
-                <li onclick="loadSection('applybeststudentaward')"><i class="fas fa-medal"></i> <span>Best Student Awards</span></li>
-                <li onclick="loadSection('applyscholarship')"><i class="fas fa-award"></i> <span>Scholarships</span></li>
-                <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+                <li onclick="navigateSection('disciplineincidents', {{ staff.id }})"><i class="fas fa-exclamation-circle"></i> <span>Discipline Incidents</span></li>
+                <li onclick="navigateSection('applybeststudentaward', {{ staff.id }})"><i class="fas fa-medal"></i> <span>Best Student Awards</span></li>
+                <li onclick="navigateSection('applyscholarship', {{ staff.id }})"><i class="fas fa-award"></i> <span>Scholarships</span></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
 
@@ -278,27 +277,25 @@
                     <p>Manage student discipline and awards from this powerful dashboard.</p>
                 </div>
 
-
-
                 <!-- Discipline Incidents -->
                 <div class="card" data-section="disciplineincidents">
                     <h4>Discipline Incidents</h4>
                     <p>Track and review discipline incidents.</p>
-                    <a href="/fd_disciplineincidents" class="btn-feature">Go</a>
+                    <a href="/fd_disciplineincidents?user_id={{ staff.id }}" class="btn-feature">Go</a>
                 </div>
 
                 <!-- Best Student Awards -->
                 <div class="card" data-section="applybeststudentaward">
                     <h4>Best Student Awards</h4>
                     <p>Nominate students for best student awards.</p>
-                    <a href="/fd_applybeststudentaward" class="btn-feature">Go</a>
+                    <a href="/fd_applybeststudentaward?user_id={{ staff.id }}" class="btn-feature">Go</a>
                 </div>
 
                 <!-- Scholarships -->
                 <div class="card" data-section="applyscholarship">
                     <h4>Scholarships</h4>
                     <p>Process scholarship applications.</p>
-                    <a href="/fd_applyscholarship" class="btn-feature">Go</a>
+                    <a href="/fd_applyscholarship?user_id={{ staff.id }}" class="btn-feature">Go</a>
                 </div>
             </div>
         </div>
@@ -320,13 +317,16 @@
             localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
 
-        // Load Section
-        function loadSection(section) {
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                if (card.classList.contains('welcome-card')) return;
-                card.style.display = card.dataset.section === section ? 'block' : 'none';
-            });
+        // Navigate to Section
+        function navigateSection(section, userId) {
+            const routes = {
+                'disciplineincidents': `/fd_disciplineincidents?user_id=${userId}`,
+                'applybeststudentaward': `/fd_applybeststudentaward?user_id=${userId}`,
+                'applyscholarship': `/fd_applyscholarship?user_id=${userId}`
+            };
+            if (routes[section]) {
+                window.location.href = routes[section];
+            }
         }
 
         // Search Functionality

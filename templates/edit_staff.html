@@ -66,9 +66,6 @@
             opacity: 0;
             animation: zoomIn 0.5s forwards;
             margin-top: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
         }
         body.dark-mode .card {
             background: var(--card-bg-dark);
@@ -106,8 +103,8 @@
             border-radius: 0.5rem;
             font-weight: bold;
             transition: background 0.3s, transform 0.3s;
-            display: block;
-            margin: 1rem auto;
+            display: inline-block;
+            margin-right: 1rem;
         }
         .btn-submit:hover {
             background: var(--primary);
@@ -178,7 +175,7 @@
             <h1>Edit Staff - Don Bosco College</h1>
         </div>
         <div class="flex items-center space-x-4">
-            <a href="/index.html" class="text-white hover:text-blue-300">Home</a>
+            <a href="/staffmembers" class="text-white hover:text-blue-300">Back to Staff List</a>
             <span class="theme-toggle" onclick="toggleTheme()">🌙</span>
         </div>
     </header>
@@ -187,10 +184,7 @@
     <div class="container">
         <div class="card">
             <h2 class="text-2xl font-bold mb-6 text-center text-primary">Edit Staff Member</h2>
-            {% if message %}
-                <p class="success-message">{{ message }}</p>
-            {% endif %}
-            <form method="post" action="/update_staff/{{ staff.id }}" id="editStaffForm" onsubmit="return validateForm()">
+            <form method="post" action="/edit_staff/{{ staff.id }}" id="editStaffForm" onsubmit="return validateForm()">
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" id="name" name="name" value="{{ staff.name }}" required>
@@ -206,14 +200,14 @@
                 <div class="form-group">
                     <label for="role">Role</label>
                     <select id="role" name="role" required>
-                        <option value="principal" {% if staff.role == 'principal' %}selected{% endif %}>Principal</option>
-                        <option value="faculty" {% if staff.role == 'faculty' %}selected{% endif %}>Faculty</option>
-                        <option value="committee" {% if staff.role == 'committee' %}selected{% endif %}>Committee Member</option>
+                        <option value="principal" {% if staff.role == "principal" %}selected{% endif %}>Principal</option>
+                        <option value="faculty" {% if staff.role == "faculty" %}selected{% endif %}>Faculty</option>
+                        <option value="committee" {% if staff.role == "committee" %}selected{% endif %}>Committee Member</option>
                     </select>
                 </div>
                 <button type="submit" class="btn-submit">Update Staff Member</button>
             </form>
-            <a href="/staffmembers" class="back-link"><i class="fas fa-arrow-left"></i>Back to Staff Management</a>
+            <a href="/staffmembers" class="back-link"><i class="fas fa-arrow-left"></i>Back to Staff List</a>
         </div>
     </div>
 

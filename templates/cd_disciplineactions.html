@@ -1,11 +1,158 @@
-<h2>Manage Discipline Actions</h2>
-<table>
-    <tr><th>Incident ID</th><th>Action</th><th>Status</th></tr>
-    {% for action in actions %}
-    <tr>
-        <td>{{ action.incident_id }}</td>
-        <td>{{ action.action_text }}</td>
-        <td>{{ action.status }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disciplinary Actions - Don Bosco College</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #ef4444;
+            --bg-light: #f3f4f6;
+            --bg-dark: #1f2937;
+            --text-light: #111827;
+            --text-dark: #d1d5db;
+            --card-bg-light: white;
+            --card-bg-dark: #374151;
+            --shadow: 0 6px 20px rgba(0,0,0,0.15);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --success: #10b981;
+            --error: #ef4444;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            animation: slideDown 0.5s ease-out;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .table-container {
+            background: var(--card-bg-light);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            animation: zoomIn 0.5s ease-out;
+        }
+        body.dark-mode .table-container {
+            background: var(--card-bg-dark);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background: var(--primary);
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        body.dark-mode tr:nth-child(even) {
+            background: #2d3748;
+        }
+        a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .no-data {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            margin: 20px 0;
+        }
+        .message {
+            color: var(--success);
+            font-weight: bold;
+            margin: 10px 0;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Disciplinary Actions</h1>
+        </div>
+        <a href="/committeedashboard?user_id={{ staff.id }}">Back to Committee Dashboard</a>
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+        <div class="table-container">
+            <h2>All Disciplinary Actions</h2>
+            {% if actions %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Incident ID</th>
+                            <th>Student ID</th>
+                            <th>Action Description</th>
+                            <th>Assigned Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for action in actions %}
+                            <tr>
+                                <td>{{ action.id }}</td>
+                                <td>{{ action.incident_id }}</td>
+                                <td>{{ action.student_id }}</td>
+                                <td>{{ action.action_description }}</td>
+                                <td>{{ action.assigned_date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-data">No disciplinary actions available.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

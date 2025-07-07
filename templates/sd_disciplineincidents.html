@@ -1,6 +1,251 @@
-<h2>Report a Discipline Incident</h2>
-<form method="POST" action="/submit_incident">
-    <label>Incident Description:</label><br>
-    <textarea name="description" required></textarea><br><br>
-    <button type="submit">Submit</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Discipline Incidents - Don Bosco College</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #ef4444;
+            --bg-light: #f3f4f6;
+            --bg-dark: #1f2937;
+            --text-light: #111827;
+            --text-dark: #d1d5db;
+            --card-bg-light: white;
+            --card-bg-dark: #374151;
+            --shadow: 0 6px 20px rgba(0,0,0,0.15);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            animation: slideDown 0.5s ease-out;
+        }
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: bold;
+        }
+        .card {
+            background: var(--card-bg-light);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, opacity 0.3s, background 0.3s;
+            opacity: 0;
+            animation: zoomIn 0.5s forwards;
+            margin-top: 2rem;
+        }
+        body.dark-mode .card {
+            background: var(--card-bg-dark);
+        }
+        .card:hover {
+            transform: scale(1.02);
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .back-link i {
+            margin-right: 0.5rem;
+        }
+        .success-message {
+            color: #10b981;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        .error-message {
+            color: #ef4444;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        body.dark-mode .success-message {
+            color: #34d399;
+        }
+        body.dark-mode .error-message {
+            color: #f87171;
+        }
+        .theme-toggle {
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0.5rem;
+        }
+        footer {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin-top: auto;
+        }
+        .incident-table {
+            width: 100%;
+            margin-top: 2rem;
+            border-collapse: collapse;
+        }
+        .incident-table th, .incident-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #d1d5db;
+        }
+        .incident-table th {
+            background: var(--primary);
+            color: white;
+        }
+        .incident-table td {
+            background: var(--card-bg-light);
+        }
+        body.dark-mode .incident-table td {
+            background: var(--card-bg-dark);
+        }
+        .status-pending {
+            color: #e67e22;
+            font-weight: 500;
+        }
+        .status-under-review {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        .status-resolved {
+            color: #27ae60;
+            font-weight: 500;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            .incident-table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="flex items-center">
+            <img src="https://source.unsplash.com/random/50x50/?logo" alt="Don Bosco Logo" class="h-10 mr-3">
+            <h1>View Discipline Incidents - Don Bosco College</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="/studentdashboard?user_id={{ student.id }}" class="text-white hover:text-blue-300">Back to Dashboard</a>
+            <span class="theme-toggle" onclick="toggleTheme()">🌙</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-6 text-center text-primary">Your Discipline Incidents</h2>
+            {% if message %}
+                <p class="success-message">{{ message }}</p>
+            {% endif %}
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+            {% if incidents %}
+                <table class="incident-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Class</th>
+                            <th>Department</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for incident in incidents %}
+                        <tr>
+                            <td>{{ incident.id }}</td>
+                            <td>{{ incident.class_name }}</td>
+                            <td>{{ incident.department }}</td>
+                            <td>{{ incident.incident_date }}</td>
+                            <td>{{ incident.description }}</td>
+                            <td class="status-{{ incident.status|lower|replace(' ', '-') }}">{{ incident.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-center text-gray-500">No discipline incidents reported.</p>
+            {% endif %}
+            <a href="/studentdashboard?user_id={{ student.id }}" class="back-link"><i class="fas fa-arrow-left"></i>Back to Student Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Don Bosco College | Student Discipline Management System</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Student Discipline Incidents Page loaded successfully!");
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,52 +1,26 @@
 from pydantic import BaseModel
-from datetime import date
-class UserCreate(BaseModel):
-    name: str
-    email: str
 
-class User(UserCreate):
-    id: int
+class StaffMemberCreate(BaseModel):
+       name: str
+       username: str
+       password: str
+       role: str
 
-class Config:
-        from_attributes = True
-class StudentBase(BaseModel):
-    name: str
-    username: str
-
-class StudentCreate(StudentBase):
-    password: str
-
-class Student(StudentBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-class StaffMemberBase(BaseModel):
-    name: str
-    username: str
-    role: str
-
-class StaffMemberCreate(StaffMemberBase):
-    password: str
-
-class StaffMember(StaffMemberBase):
-    id: int
-
-    class Config:
-        orm_mode = True        
-
+class StudentCreate(BaseModel):
+       name: str
+       username: str
+       password: str
 class IncidentCreate(BaseModel):
-    student_id: str
-    student_name: str
-    class_name: str
-    department: str
-    incident_date: date
-    description: str
+       student_id: str
+       student_name: str
+       class_name: str
+       department: str
+       committee_member_id: int | None
+       incident_date: str
+       description: str
 
-class Incident(IncidentCreate):
-    id: int
-    status: str
-
-    class Config:
-        orm_mode = True
-        
+class DisciplinaryActionCreate(BaseModel):
+       incident_id: int
+       student_id: str
+       action_description: str
+       assigned_date: str

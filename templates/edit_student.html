@@ -66,9 +66,6 @@
             opacity: 0;
             animation: zoomIn 0.5s forwards;
             margin-top: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
         }
         body.dark-mode .card {
             background: var(--card-bg-dark);
@@ -104,8 +101,8 @@
             border-radius: 0.5rem;
             font-weight: bold;
             transition: background 0.3s, transform 0.3s;
-            display: block;
-            margin: 1rem auto;
+            display: inline-block;
+            margin-right: 1rem;
         }
         .btn-submit:hover {
             background: var(--primary);
@@ -176,7 +173,7 @@
             <h1>Edit Student - Don Bosco College</h1>
         </div>
         <div class="flex items-center space-x-4">
-            <a href="/index.html" class="text-white hover:text-blue-300">Home</a>
+            <a href="/students" class="text-white hover:text-blue-300">Back to Student List</a>
             <span class="theme-toggle" onclick="toggleTheme()">🌙</span>
         </div>
     </header>
@@ -185,10 +182,7 @@
     <div class="container">
         <div class="card">
             <h2 class="text-2xl font-bold mb-6 text-center text-primary">Edit Student</h2>
-            {% if message %}
-                <p class="success-message">{{ message }}</p>
-            {% endif %}
-            <form method="post" action="/update_student/{{ student.id }}" id="editStudentForm" onsubmit="return validateForm()">
+            <form method="post" action="/edit_student/{{ student.id }}" id="editStudentForm" onsubmit="return validateForm()">
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" id="name" name="name" value="{{ student.name }}" required>
@@ -203,7 +197,7 @@
                 </div>
                 <button type="submit" class="btn-submit">Update Student</button>
             </form>
-            <a href="/students" class="back-link"><i class="fas fa-arrow-left"></i>Back to Student Management</a>
+            <a href="/students" class="back-link"><i class="fas fa-arrow-left"></i>Back to Student List</a>
         </div>
     </div>
 
